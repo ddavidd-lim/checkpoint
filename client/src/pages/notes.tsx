@@ -13,6 +13,7 @@ import {
   useQuery,
   useQueryClient
 } from '@tanstack/react-query';
+import Stack from '@mui/material/Stack';
 
 const drawerWidth = 240;
 
@@ -24,17 +25,16 @@ export default function Notes() {
   const { data: noteIds } = useQuery({
     queryKey: ['notes', currentNoteId],
     queryFn: async () => {
-      const { data } = await supabase.from('notes').select('id').order("created_at", { ascending: true });
+      const { data } = await supabase.from('notes').select('id, title').order("created_at", { ascending: true });
 
       console.log(data)
       if (data) {
         console.log(`Found ${data.length} notes`)
 
-        const notes = data.map(note => note.id);
         if (!currentNoteId) {
-          setCurrentNoteId(notes[0])
+          setCurrentNoteId(data[0].id)
         }
-        return notes;
+        return data;
       }
 
       return [];
@@ -92,8 +92,8 @@ export default function Notes() {
           flexDirection: 'column',
         }}
       >
-        <Typography variant='subtitle1'>
-          Current: {currentNoteId}
+        <Typography variant='subtitle1' sx={{ fontWeight: 600, p: 2}}>
+          Notes
         </Typography>
         <Box sx={{
           display: 'flex',
@@ -102,11 +102,19 @@ export default function Notes() {
           flexDirection: 'column',
         }}>
           <List>
-            {noteIds && noteIds.map(noteId => (
+            {noteIds && noteIds.map(note => (
               <ListItemButton
-                selected={noteId === currentNoteId}
-                onClick={() => setCurrentNoteId(noteId)}>
-                {noteId}
+                selected={note.id === currentNoteId}
+                onClick={() => setCurrentNoteId(note.id)}>
+                <Stack>
+                  <Typography >
+                    {note.title === "" ? 'Untitled' : note.title}
+
+                  </Typography>
+                  <Typography variant='subtitle2' sx={{fontSize: 10}}>
+                    {note.id}
+                  </Typography>
+                </Stack>
               </ListItemButton>
             ))}
           </List>

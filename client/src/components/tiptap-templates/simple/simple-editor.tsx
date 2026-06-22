@@ -79,6 +79,7 @@ import { supabase } from "@/services/supabase"
 import { saveNote } from "@/repositories/notes"
 import TextField from "@mui/material/TextField"
 import Box from "@mui/material/Box"
+import { useQueryClient } from "@tanstack/react-query"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -198,6 +199,9 @@ export function SimpleEditor({ noteId }: Props) {
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
   )
+
+  const queryClient = useQueryClient();
+
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const saveTimeout = useRef<number | null>(null);
@@ -275,6 +279,7 @@ export function SimpleEditor({ noteId }: Props) {
   }, [isMobile, mobileView])
 
 
+  // Callback to save debounced
   const scheduleSave = useCallback(() => {
     if (!editor || !noteId) return;
 
@@ -284,8 +289,12 @@ export function SimpleEditor({ noteId }: Props) {
 
     saveTimeout.current = setTimeout(() => {
       saveNote(title, editor.getJSON(), noteId);
+      queryClient.invalidateQueries({
+        queryKey: ['notes'],
+        refetchType: 'all'
+      })
     }, 1000);
-  }, [editor, noteId, title,]);
+  }, [editor, noteId, title, queryClient]);
 
   // Debounce note saving to 1 second after user stops typing
   useEffect(() => {
@@ -302,6 +311,7 @@ export function SimpleEditor({ noteId }: Props) {
     }
   }, [editor, noteId, title, scheduleSave])
 
+  // Debounce note saving after user edits title
   useEffect(() => {
     if (!editor || !noteId) return;
     scheduleSave();
