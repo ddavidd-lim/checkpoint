@@ -134,7 +134,7 @@ export default function Notes() {
         }}
       >
         <Typography variant='subtitle1' sx={{ fontWeight: 600, p: 2 }}>
-          Notes
+          Waypoint
         </Typography>
         <Box sx={{
           display: 'flex',
