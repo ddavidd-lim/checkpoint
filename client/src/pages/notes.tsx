@@ -125,7 +125,7 @@ export default function Notes() {
           overflow: 'hidden',
         }}
       >
-        <SimpleEditor noteId={selectedNoteId} />
+        <SimpleEditor noteId={currentNoteId} />
       </Box>
     </>
   );
