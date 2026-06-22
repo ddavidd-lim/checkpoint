@@ -9,7 +9,9 @@ import { useEffect, useState } from 'react';
 import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import {
-  useQuery
+  useMutation,
+  useQuery,
+  useQueryClient
 } from '@tanstack/react-query';
 
 const drawerWidth = 240;
@@ -17,22 +19,51 @@ const drawerWidth = 240;
 export default function Notes() {
   const [currentNoteId, setCurrentNoteId] = useState<string>();
 
+  const queryClient = useQueryClient();
+
   const { data: noteIds } = useQuery({
     queryKey: ['notes', currentNoteId],
     queryFn: async () => {
-      const { data } = await supabase.from('notes').select('id').limit(1);
+      const { data } = await supabase.from('notes').select('id').order("created_at", { ascending: true});
 
       console.log(data)
       if (data) {
         console.log(`Found ${data.length} notes`)
 
         const notes = data.map(note => note.id);
-        setCurrentNoteId(notes[0])
-
+        if (!currentNoteId) {
+          setCurrentNoteId(notes[0])
+        }
         return notes;
       }
 
       return [];
+    }
+  })
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) throw error;
+
+      const userId = data.user?.id;
+
+      if (!userId) return;
+
+      const { error: insertError } = await supabase.from('notes').insert({
+        user_id: userId,
+      });
+
+      if (insertError) {
+        console.log(`Error creating note: ${insertError}`)
+      }
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: ['notes'],
+        refetchType: 'all'
+      })
     }
   })
 
@@ -79,7 +110,7 @@ export default function Notes() {
               </ListItemButton>
             ))}
           </List>
-          <Button>
+          <Button onClick={() => mutation.mutateAsync()}>
             Create New Note
           </Button>
         </Box>
