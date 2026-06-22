@@ -17,5 +17,23 @@ export const fetchNotes = async () => {
 // Fetch single note by id
 
 // Create new note
+export const createNote = async (title: string, userId: string) => {
+  const result = await supabase.from('notes').insert({
+    title: title,
+    user_id: userId,
+  });
 
+  return result;
+}
 // Delete note by id
+export const deleteNote = async (noteId: string) => {
+  const { error } = await supabase
+    .from('notes')
+    .delete()
+    .eq('id', noteId);
+
+  if (error) {
+    console.log(`Error deleting note: ${error}`);
+    throw error;
+  }
+}

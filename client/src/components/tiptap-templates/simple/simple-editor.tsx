@@ -209,6 +209,8 @@ export function SimpleEditor({ noteId }: Props) {
 
   const saveTimeout = useRef<number | null>(null);
 
+  const loadedNoteId = useRef<string | null>(null);
+
   const [title, setTitle] = useState('');
 
   const editor = useEditor({
@@ -260,20 +262,19 @@ export function SimpleEditor({ noteId }: Props) {
 
       return data?.[0] ?? null
     },
-    enabled: !!noteId
+    enabled: !!noteId,
+    staleTime: 1000 * 60 * 5
   })
 
   useEffect(() => {
-    async function getNote() {
-      if (!editor || !note) return;
+    if (!editor || !note) return;
 
-      setTitle(note.title ?? '')
-      editor.commands.setContent(note.content as Content)
-    }
+    // Don't set content if its the same note
+    loadedNoteId.current = note.id;
 
-    if (!editor) return;
+    setTitle(note.title ?? '')
+    editor.commands.setContent(note.content as Content)
 
-    getNote()
   }, [editor, note])
 
   const rect = useCursorVisibility({
