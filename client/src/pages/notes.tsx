@@ -21,6 +21,7 @@ import {
   useQueryClient
 } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { useUser } from '@/hooks/useUser';
 
 const drawerWidth = 240;
 
@@ -30,6 +31,8 @@ export default function Notes() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
+
+  const { data: user } = useUser();
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLElement>, noteId: string) => {
     e.stopPropagation(); // prevent ListItemButton onClick from firing
@@ -44,12 +47,11 @@ export default function Notes() {
 
   const queryClient = useQueryClient();
 
-  const { data: noteIds } = useQuery({
+  const { data: noteIds, isSuccess } = useQuery({
     queryKey: ['notes'],
     queryFn: async () => {
       const { data } = await supabase.from('notes').select().order("created_at", { ascending: true });
 
-      console.log(data)
       return data ?? []
     },
     staleTime: 1000 * 60 * 5
@@ -59,25 +61,20 @@ export default function Notes() {
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.auth.getUser();
+      if (!user?.id) throw new Error('No user')
+
+      const { error } = await createNote('', user.id)
 
       if (error) throw error;
-
-      const userId = data.user?.id;
-
-      if (!userId) return;
-
-      const { error: insertError } = await createNote('', userId)
-
-      if (insertError) {
-        console.log(`Error creating note: ${insertError}`)
-      }
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: ['notes'],
         refetchType: 'all'
       })
+    },
+    onError: async (error) => {
+      console.log(`Failed to create note: ${error}`)
     }
   })
 
@@ -118,6 +115,13 @@ export default function Notes() {
     hi();
   }, []);
 
+  useEffect(() => {
+    if (!user?.id) return
+    if (!isSuccess) return
+    if (noteIds.length > 0) return
+
+    createMutation.mutate()
+  }, [user?.id, isSuccess, noteIds?.length, createMutation])
 
 
   return (
