@@ -92,11 +92,13 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error('No user');
-      const { error } = await createNote('', user.id);
+      const { data, error } = await createNote('', user.id);
       if (error) throw error;
+      return data;
     },
-    onSuccess: () => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ['notes'], refetchType: 'all' });
+      handleSelectCurrentNoteId(data.id);
     },
     onError: (error) => {
       console.log(`Failed to create note: ${error}`);

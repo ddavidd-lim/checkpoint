@@ -23,7 +23,7 @@ export const createNote = async (title: string, userId: string) => {
     title: title,
     user_id: userId,
     content: content as JSONContent
-  });
+  }).select().single();
 
   return result;
 }
