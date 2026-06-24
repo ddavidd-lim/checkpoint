@@ -1,11 +1,11 @@
 
+import Box from '@mui/material/Box';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
   QueryClient,
   QueryClientProvider
 } from '@tanstack/react-query';
 import Notes from './pages/notes';
-import Box from '@mui/material/Box';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const darkTheme = createTheme({
   palette: {
