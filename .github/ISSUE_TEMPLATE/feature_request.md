@@ -10,7 +10,7 @@ assignees: ddavidd-lim
 **Goal / Problem**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-**Implementation*
+**Implementation**
 A clear and concise description of what you want to happen.
 
 **Success Criteria**
