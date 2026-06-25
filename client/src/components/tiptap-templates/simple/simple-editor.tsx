@@ -205,9 +205,11 @@ export function SimpleEditor({ noteId }: Props) {
 
   const queryClient = useQueryClient();
 
-  const toolbarRef = useRef<HTMLDivElement>(null)
+  const toolbarRef = useRef<HTMLDivElement>(null);
 
   const saveTimeout = useRef<number | null>(null);
+
+  const titleRef = useRef<HTMLInputElement>(null)
 
   const loadedNoteId = useRef<string | null>(null);
 
@@ -230,6 +232,23 @@ export function SimpleEditor({ noteId }: Props) {
         link: {
           openOnClick: false,
           enableClickSelection: true,
+        },
+      }).extend({
+        addKeyboardShortcuts() {
+          return {
+            ArrowUp: () => {
+              const { state } = this.editor
+              const { from } = state.selection
+
+              // Cursor is at very beginning
+              if (from === 1) {
+                titleRef.current?.focus()
+                return true
+              }
+
+              return false
+            },
+          }
         },
       }),
       HorizontalRule,
@@ -377,7 +396,18 @@ export function SimpleEditor({ noteId }: Props) {
             variant="standard"
             placeholder="Untitled"
             value={title}
+            inputRef={titleRef}
             onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                editor?.commands.focus('start')
+              }
+              if (e.key === 'ArrowDown') {
+                e.preventDefault()
+                editor?.commands.focus('start')
+              }
+            }}
             sx={{
               p: 2,
               pl: 5,
