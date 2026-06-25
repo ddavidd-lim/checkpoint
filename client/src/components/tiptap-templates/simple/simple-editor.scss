@@ -68,12 +68,12 @@ body,
   flex: 1 1 0;
   min-height: 0;
   overflow-y: auto;
+  align-items: center;
 }
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   max-width: 750px;
-  margin: 0 auto;
-  flex: 1;
+  width: 100%;
   padding: 3rem 3rem 30vh;
 }
 
