@@ -83,6 +83,8 @@ import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
 import type { Note } from "@/types/db"
+import Mention from '@tiptap/extension-mention'
+import { placeSuggestion } from "@/components/placeSuggestion"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -227,6 +229,15 @@ export function SimpleEditor({ noteId }: Props) {
       },
     },
     extensions: [
+      Mention.configure({
+        HTMLAttributes: {
+          class: 'place-chip',
+        },
+        suggestion: placeSuggestion,
+        renderLabel({ node }) {
+          return `📍 ${node.attrs.label}`
+        },
+      }),
       StarterKit.configure({
         horizontalRule: false,
         link: {
