@@ -30,6 +30,13 @@ export default function App() {
           },
 
         },
+        components: {
+          MuiButtonBase: {
+            defaultProps: {
+              disableRipple: true,
+            },
+          },
+        },
       }),
     [isDarkMode]
   );
