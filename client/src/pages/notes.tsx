@@ -1,6 +1,6 @@
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import Box from '@mui/material/Box';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { createNote } from '@/repositories/notes';
 import { initAuth } from '@/repositories/users';
@@ -20,9 +20,9 @@ export default function Notes() {
   const queryClient = useQueryClient();
   const { data: user } = useUser();
 
-  const handleSelectCurrentNoteId = (noteId: string) => {
+  const handleSelectCurrentNoteId = useCallback((noteId: string) => {
     setSelectedNoteId(noteId);
-  };
+  }, []);
 
   const { data: notes, isSuccess } = useQuery<Note[]>({
     queryKey: ['notes'],

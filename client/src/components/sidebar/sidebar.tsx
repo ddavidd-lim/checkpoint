@@ -13,7 +13,7 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
 import { enqueueSnackbar } from "notistack";
 
@@ -37,7 +37,6 @@ type Props = {
 export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Props) {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -53,11 +52,11 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
     staleTime: 1000 * 60 * 5,
   });
 
-  const handleMenuOpen = (e: React.MouseEvent<HTMLElement>, noteId: string) => {
+  const handleMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>, noteId: string) => {
     e.stopPropagation();
     setMenuAnchor(e.currentTarget);
     setMenuNoteId(noteId);
-  };
+  }, []);
 
   const handleMenuClose = () => {
     setMenuAnchor(null);
@@ -148,9 +147,6 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
           notes={notes}
           handleSelectCurrentNoteId={handleSelectCurrentNoteId}
           currentNoteId={currentNoteId}
-          hoveredId={hoveredId}
-          setHoveredId={setHoveredId}
-          menuNoteId={menuNoteId}
           onMenuOpen={handleMenuOpen}
         />
       </Box>
@@ -223,8 +219,9 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId }: Pr
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
             Anonymous Cockatoo
           </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          <Typography variant="caption" sx={{ fontSize: 8, color: 'text.secondary' }}>
             {/* anon@email.com */}
+            {user?.id}
           </Typography>
         </Box>
       </Stack>
