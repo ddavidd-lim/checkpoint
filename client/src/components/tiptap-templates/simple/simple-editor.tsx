@@ -75,6 +75,8 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
+import { PlaceMention } from "@/components/place-suggestion/placeMention"
+import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
@@ -82,10 +84,7 @@ import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import Mention from '@tiptap/extension-mention'
 import dayjs from 'dayjs'
-import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
-import { PlaceMention } from "@/components/place-suggestion/placeMention"
 
 
 const MainToolbarContent = ({
