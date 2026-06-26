@@ -85,6 +85,8 @@ import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
+import type { ActivePlace } from "@/components/place-suggestion/types"
+import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 
 
 const MainToolbarContent = ({
@@ -218,6 +220,8 @@ export function SimpleEditor({ noteId }: Props) {
 
   const [title, setTitle] = useState('');
 
+  const [activePlace, setActivePlace] = useState<ActivePlace | null>(null)
+
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
@@ -228,11 +232,26 @@ export function SimpleEditor({ noteId }: Props) {
         "aria-label": "Main content area, start typing to enter text.",
         class: "simple-editor",
       },
+      handleDOMEvents: {
+        mousedown(_view, event) {
+          const target = event.target as HTMLElement
+
+          // Prevent from updating selection when clicking a place chip or its children
+          if (target.closest('.place-chip')) {
+            event.preventDefault()
+            return true
+          }
+          return false
+        },
+      },
+
     },
     extensions: [
       PlaceMention.configure({
         HTMLAttributes: { class: 'place-chip' },
         suggestion: placeSuggestion,
+        onChipClick: (place) => setActivePlace(place),
+
       }),
       StarterKit.configure({
         horizontalRule: false,
@@ -427,6 +446,13 @@ export function SimpleEditor({ noteId }: Props) {
           className="simple-editor-content"
         />
       </EditorContext.Provider>
+      <PlacePopover
+        anchor={activePlace?.anchor ?? null}
+        placeId={activePlace?.placeId ?? ''}
+        label={activePlace?.label ?? ''}
+        secondaryText={activePlace?.secondaryText ?? ''}
+        onClose={() => setActivePlace(null)}
+      />
     </div>
   )
 }
