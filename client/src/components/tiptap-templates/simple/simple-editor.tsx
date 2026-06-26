@@ -85,6 +85,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Mention from '@tiptap/extension-mention'
 import dayjs from 'dayjs'
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
+import { PlaceMention } from "@/components/place-suggestion/placeMention"
+
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -229,14 +231,9 @@ export function SimpleEditor({ noteId }: Props) {
       },
     },
     extensions: [
-      Mention.configure({
-        HTMLAttributes: {
-          class: 'place-chip',
-        },
+      PlaceMention.configure({
+        HTMLAttributes: { class: 'place-chip' },
         suggestion: placeSuggestion,
-        renderLabel({ node }) {
-          return `📍 ${node.attrs.label}`
-        },
       }),
       StarterKit.configure({
         horizontalRule: false,
