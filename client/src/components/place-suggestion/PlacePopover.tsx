@@ -25,6 +25,9 @@ export function PlacePopover({ anchor, placeId, label, secondaryText, onClose }:
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      disableAutoFocus
+      disableEnforceFocus
+      disableRestoreFocus
       slotProps={{
         paper: {
           sx: { borderRadius: 2, overflow: 'hidden', width: 420 },
@@ -48,7 +51,7 @@ export function PlacePopover({ anchor, placeId, label, secondaryText, onClose }:
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
           <PlaceIcon fontSize="small" color="primary" sx={{ mt: 0.25 }} />
           <Box>
-            <Typography variant="body2" sx={{ fontWeight: 600}}>{label}</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>{label}</Typography>
             <Typography variant="caption" color="text.secondary">{secondaryText}</Typography>
           </Box>
         </Box>
