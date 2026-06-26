@@ -9,6 +9,8 @@ export const placeSuggestion: Partial<SuggestionOptions<PlaceItem>> = {
   allowSpaces: true,
   minQueryLength: 2,
   debounce: 300,
+  decorationClass: 'place-suggestion',
+  decorationEmptyClass: 'is-empty',
 
   items: async ({ query, signal }): Promise<PlaceItem[]> => {
     if (!window.google?.maps?.places?.AutocompleteSuggestion) return []
