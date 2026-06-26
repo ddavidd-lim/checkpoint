@@ -15,6 +15,8 @@ interface PlacePopoverProps {
 }
 
 export function PlacePopover({ anchor, placeId, label, secondaryText, onClose }: PlacePopoverProps) {
+  if (!placeId) return null;
+
   const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&q=place_id:${placeId}`
   const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${placeId}`
 
