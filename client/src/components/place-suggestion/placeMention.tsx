@@ -1,6 +1,6 @@
 
 import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react"
-import { PlaceChip } from "@/components/place-suggestion/placeChip"
+import { PlaceChip } from "@/components/place-suggestion/PlaceChip"
 import Mention from "@tiptap/extension-mention"
 
 export const PlaceMention = Mention.extend({
