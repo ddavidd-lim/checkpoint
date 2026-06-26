@@ -24,7 +24,7 @@ export function PlaceChip({ label, onClick }: PlaceChipProps) {
         gap: 0.5,
         px: 1,
         py: 0.25,
-        borderRadius: 99,
+        borderRadius: 1,
         backgroundColor: 'primary.main',
         color: 'primary.contrastText',
         fontSize: '0.8rem',
