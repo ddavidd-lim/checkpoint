@@ -1,3 +1,6 @@
+import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import { usePlacePois } from '@/hooks/usePlacePois';
+import type { Place } from '@/types/places';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Box from "@mui/material/Box";
@@ -5,10 +8,15 @@ import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import Typography from "@mui/material/Typography";
 import { OverviewMap } from '../OverviewMap';
-import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
-import type { Place } from '@/types/places';
+import Paper from '@mui/material/Paper';
 
 const Drawer = styled(MuiDrawer)({
   width: RIGHT_DRAWER_WIDTH,
@@ -26,8 +34,9 @@ type Props = {
   places: Place[];
 }
 export default function OverviewMapDrawer({ handleDrawerClose, open, places }: Props) {
-
   const theme = useTheme();
+
+  const { data: pois = [] } = usePlacePois(places);
 
   return (
     <Drawer
@@ -67,6 +76,27 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
       </Stack>
 
       <OverviewMap places={places} />
+
+      <TableContainer component={Paper}>
+        <Table size='small'>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Address</TableCell>
+              <TableCell>City, State</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {pois.map(poi =>
+              <TableRow>
+                <TableCell>{poi.name}</TableCell>
+                <TableCell>{poi.address}</TableCell>
+                <TableCell>{poi.city}, {poi.state}</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Drawer>
   );
 }
