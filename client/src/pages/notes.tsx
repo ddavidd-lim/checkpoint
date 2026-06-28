@@ -89,11 +89,6 @@ export default function Notes() {
 
   useEffect(() => {
     initAuth();
-    const hi = async () => {
-      const user = await supabase.auth.getUser();
-      console.log('Current user:', user);
-    };
-    hi();
   }, []);
 
   useEffect(() => {

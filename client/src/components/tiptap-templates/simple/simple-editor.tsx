@@ -76,7 +76,10 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import { PlaceMention } from "@/components/place-suggestion/placeMention"
+import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
+import type { ActivePlace } from "@/components/place-suggestion/types"
+import { NotesMap } from "@/components/NotesMap"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
@@ -85,8 +88,6 @@ import TextField from "@mui/material/TextField"
 import MuiTypography from "@mui/material/Typography"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dayjs from 'dayjs'
-import type { ActivePlace } from "@/components/place-suggestion/types"
-import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 
 
 const MainToolbarContent = ({
@@ -252,6 +253,13 @@ export function SimpleEditor({ noteId }: Props) {
         suggestion: placeSuggestion,
         onChipClick: (place) => setActivePlace(place),
 
+      }).extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            secondaryText: { default: null },
+          }
+        },
       }),
       StarterKit.configure({
         horizontalRule: false,
@@ -330,16 +338,6 @@ export function SimpleEditor({ noteId }: Props) {
       const content = editor.getJSON();
 
       saveNote(title, content, noteId);
-      // Update single note
-      // queryClient.setQueryData(['note', noteId], (old: Note) => {
-      //   if (!old) return old;
-
-      //   return {
-      //     ...old,
-      //     title,
-      //     content,
-      //   };
-      // });
 
       // 2. optionally update notes list WITHOUT refetch
       queryClient.setQueryData(['notes'], (old: Note[] = []) => {
@@ -373,6 +371,36 @@ export function SimpleEditor({ noteId }: Props) {
     scheduleSave();
   }, [title, editor, noteId, scheduleSave])
 
+
+  const [placeIds, setPlaceIds] = useState<{ id: string; label: string }[]>([]);
+
+  useEffect(() => {
+    if (!editor) return
+
+    function extractPlaces() {
+      const ids: { id: string; label: string }[] = []
+      editor!.state.doc.descendants((node) => {
+        if (node.type.name === 'mention' && node.attrs.id) {
+          ids.push({ id: node.attrs.id, label: node.attrs.label })
+        }
+      })
+
+      setPlaceIds((prev) => {
+        const newKey = ids.map(i => i.id).join(',')
+        const prevKey = prev.map(i => i.id).join(',')
+        if (newKey === prevKey) return prev;
+        return ids;
+      });
+    }
+
+    editor.on('update', extractPlaces);
+    extractPlaces();
+
+    return () => {
+      editor.off('update', extractPlaces);
+    }
+  }, [editor])
+
   return (
     <div className="simple-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
@@ -401,7 +429,6 @@ export function SimpleEditor({ noteId }: Props) {
         </Toolbar>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
-
           <TextField
             variant="standard"
             placeholder="Untitled"
@@ -430,8 +457,8 @@ export function SimpleEditor({ noteId }: Props) {
               },
             }}
           />
-          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, pl: 7, justifyContent: 'space-between' }}>
 
+          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, pl: 7, justifyContent: 'space-between' }}>
             <MuiTypography variant={'subtitle2'}>
               Created: {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
@@ -439,13 +466,17 @@ export function SimpleEditor({ noteId }: Props) {
               Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
           </Box>
+
+          <NotesMap placeIds={placeIds} />
         </Box>
+
         <EditorContent
           editor={editor}
           role="presentation"
           className="simple-editor-content"
         />
       </EditorContext.Provider>
+
       <PlacePopover
         anchor={activePlace?.anchor ?? null}
         placeId={activePlace?.placeId ?? ''}

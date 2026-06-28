@@ -12,7 +12,7 @@ export function useGoogleMaps(apiKey: string) {
     const script = document.createElement('script')
     script.id = 'google-maps-script'
     // New async bootstrap loader
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async&v=weekly`
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker&loading=async&v=weekly`
     script.async = true
     script.defer = true
     script.onload = () => setLoaded(true)
