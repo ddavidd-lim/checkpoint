@@ -18,15 +18,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
-
-const drawerWidth = 240;
+import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
 
 const Drawer = styled(MuiDrawer)({
-  width: drawerWidth,
+  width: LEFT_DRAWER_WIDTH,
   flexShrink: 0,
   boxSizing: 'border-box',
   [`& .${drawerClasses.paper}`]: {
-    width: drawerWidth,
+    width: LEFT_DRAWER_WIDTH,
     boxSizing: 'border-box',
   },
 });
@@ -116,10 +115,10 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
       variant="persistent"
       open={open}
       sx={{
-        width: drawerWidth,
+        width: LEFT_DRAWER_WIDTH,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: drawerWidth,
+          width: LEFT_DRAWER_WIDTH,
           boxSizing: 'border-box',
         },
       }}

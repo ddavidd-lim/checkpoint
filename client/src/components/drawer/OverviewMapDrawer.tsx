@@ -7,15 +7,14 @@ import Stack from "@mui/material/Stack";
 import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { OverviewMap } from '../OverviewMap';
-
-const drawerWidth = 240;
+import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 
 const Drawer = styled(MuiDrawer)({
-  width: drawerWidth,
+  width: RIGHT_DRAWER_WIDTH,
   flexShrink: 0,
   boxSizing: 'border-box',
   [`& .${drawerClasses.paper}`]: {
-    width: drawerWidth,
+    width: RIGHT_DRAWER_WIDTH,
     boxSizing: 'border-box',
   },
 });
@@ -36,10 +35,10 @@ export default function OverviewMapDrawer({ handleDrawerClose, open }: Props) {
       anchor="right"
       open={open}
       sx={{
-        width: drawerWidth,
+        width: RIGHT_DRAWER_WIDTH,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: drawerWidth,
+          width: RIGHT_DRAWER_WIDTH,
           boxSizing: 'border-box',
         },
       }}
@@ -62,7 +61,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open }: Props) {
         </Box>
         <Box>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {theme.direction === 'ltr' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </Box>
       </Stack>

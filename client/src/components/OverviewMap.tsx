@@ -62,7 +62,7 @@ export function OverviewMap({ placeIds }: Props) {
 
   return (
     <Map
-      style={{ width: '750px', height: '300px' }}
+      style={{ width: '100%', height: '300px' }}
       mapId='DEMO_MAP_ID'
       defaultZoom={13}
       defaultCenter={{ lat: 34.0522, lng: -118.2437 }}
