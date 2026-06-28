@@ -78,9 +78,9 @@ import { PlaceMention } from "@/components/place-suggestion/placeMention"
 import { PlacePopover } from "@/components/place-suggestion/PlacePopover"
 import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
-import { OverviewMap } from "@/components/OverviewMap"
 import { SaveIndicator } from "@/components/SaveIndicator"
 import type { SaveState } from "@/components/SaveIndicator/types"
+import { NotesMap } from "@/components/NotesMap"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
@@ -398,102 +398,6 @@ export function SimpleEditor({ noteId }: Props) {
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   })
 
-
-  const [placeIds, setPlaceIds] = useState<{ id: string; label: string }[]>([]);
-
-  useEffect(() => {
-    if (!editor) return
-
-    if (saveTimeout.current) {
-      clearTimeout(saveTimeout.current);
-    }
-
-    saveTimeout.current = setTimeout(() => {
-      const content = editor.getJSON();
-      const currentTitle = titleRef.current;
-      const currentNoteId = noteIdRef.current;
-      if (!currentNoteId) return;
-
-      saveNote(currentTitle, content, currentNoteId);
-
-      setSaveState('saved');
-
-      queryClient.setQueryData(['notes'], (old: Note[] = []) =>
-        old.map((n) =>
-          n.id === currentNoteId
-            ? { ...n, title: currentTitle, updated_at: new Date().toISOString() }
-            : n
-        )
-      );
-
-      queryClient.setQueryData(['note', currentNoteId], (old: Note | null | undefined) =>
-        old ? { ...old, title: currentTitle, updated_at: new Date().toISOString() } : old
-      );
-    }, 1000);
-  }, [editor, noteId, title, queryClient]);
-
-  // Debounce note saving after user edits title
-  useEffect(() => {
-    if (!editor || !noteId) return;
-    scheduleSave();
-  }, [title]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Flush on note switch
-  useEffect(() => {
-    return () => {
-      if (saveTimeout.current) {
-        clearTimeout(saveTimeout.current);
-        // fire immediately on cleanup
-        if (editor && noteIdRef.current) {
-          saveNote(titleRef.current, editor.getJSON(), noteIdRef.current);
-        }
-      }
-    };
-  }, [noteId, editor]);
-
-  // Load note content into editor when note changes
-  useEffect(() => {
-    if (!editor || !note) return;
-    if (loadedNoteId.current === note.id) return;
-    justLoadedRef.current = true;
-
-    loadedNoteId.current = note.id;
-
-    setTitle(note.title ?? '');
-    requestAnimationFrame(() => {
-      editor.commands.setContent(note.content as Content);
-      justLoadedRef.current = false;
-    });
-  }, [editor, note]);
-
-
-  useEffect(() => {
-    if (!editor) return
-
-    function extractPlaces() {
-      const ids: { id: string; label: string }[] = []
-      editor!.state.doc.descendants((node) => {
-        if (node.type.name === 'mention' && node.attrs.id) {
-          ids.push({ id: node.attrs.id, label: node.attrs.label })
-        }
-      })
-
-      setPlaceIds((prev) => {
-        const newKey = ids.map(i => i.id).join(',')
-        const prevKey = prev.map(i => i.id).join(',')
-        if (newKey === prevKey) return prev;
-        return ids;
-      });
-    }
-
-    editor.on('update', extractPlaces);
-    extractPlaces();
-
-    return () => {
-      editor.off('update', extractPlaces);
-    }
-  }, [editor])
-
   return (
     <div className="simple-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
@@ -563,8 +467,6 @@ export function SimpleEditor({ noteId }: Props) {
 
             </Stack>
           </Box>
-
-          <OverviewMap placeIds={placeIds} />
         </Box>
 
         <EditorContent

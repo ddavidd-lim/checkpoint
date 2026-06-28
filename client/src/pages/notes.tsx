@@ -18,7 +18,6 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useGoogleMaps } from '@/hooks/useGoogleMaps';
 
 const drawerWidth = 240;
 
@@ -112,8 +111,6 @@ export default function Notes() {
     setOpen(false);
   };
 
-  const mapsLoaded = useGoogleMaps(import.meta.env.VITE_GOOGLE_MAPS_API_KEY)
-
   return (
     <>
       <Drawer
@@ -141,8 +138,8 @@ export default function Notes() {
               <ChevronRightIcon />
             </IconButton>
           </Box>
-          {!mapsLoaded && (<div>Loading...</div>)}
-          {mapsLoaded && (<SimpleEditor key={currentNoteId} noteId={currentNoteId} />)}
+          {/* {(<div>Loading...</div>)} */}
+          {(<SimpleEditor key={currentNoteId} noteId={currentNoteId} />)}
         </Stack>
       </Main>
     </>
