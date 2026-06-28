@@ -51,18 +51,18 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
           alignItems: 'center',
           borderBottom: '1px solid',
           borderColor: 'divider',
-          justifyContent: 'space-between'
+          justifyContent: 'start'
         }}
       >
-        <Box>
-          <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            Overview Map
-          </Typography>
-        </Box>
         <Box>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
+        </Box>
+        <Box>
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            Overview Map
+          </Typography>
         </Box>
       </Stack>
 
