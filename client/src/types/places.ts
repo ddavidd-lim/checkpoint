@@ -1,0 +1,1 @@
+export type Place = { id: string; label: string };

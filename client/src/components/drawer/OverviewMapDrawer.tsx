@@ -8,6 +8,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { OverviewMap } from '../OverviewMap';
 import { RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import type { Place } from '@/types/places';
 
 const Drawer = styled(MuiDrawer)({
   width: RIGHT_DRAWER_WIDTH,
@@ -22,10 +23,9 @@ const Drawer = styled(MuiDrawer)({
 type Props = {
   handleDrawerClose: () => void;
   open: boolean;
-
+  places: Place[];
 }
-
-export default function OverviewMapDrawer({ handleDrawerClose, open }: Props) {
+export default function OverviewMapDrawer({ handleDrawerClose, open, places }: Props) {
 
   const theme = useTheme();
 
@@ -66,7 +66,7 @@ export default function OverviewMapDrawer({ handleDrawerClose, open }: Props) {
         </Box>
       </Stack>
 
-      <OverviewMap placeIds={[]} />
+      <OverviewMap places={places} />
     </Drawer>
   );
 }

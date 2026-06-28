@@ -2,7 +2,7 @@
 "use client"
 
 import { EditorContent, EditorContext, useEditor, type Content } from "@tiptap/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react"
 
 // --- Tiptap Core Extensions ---
 import { Highlight } from "@tiptap/extension-highlight"
@@ -80,10 +80,10 @@ import { placeSuggestion } from "@/components/place-suggestion/placeSuggestion"
 import type { ActivePlace } from "@/components/place-suggestion/types"
 import { SaveIndicator } from "@/components/SaveIndicator"
 import type { SaveState } from "@/components/SaveIndicator/types"
-import { NotesMap } from "@/components/NotesMap"
 import { saveNote } from "@/repositories/notes"
 import { supabase } from "@/services/supabase"
 import type { Note } from "@/types/db"
+import type { Place } from "@/types/places"
 import Box from "@mui/material/Box"
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
@@ -202,9 +202,10 @@ const MobileToolbarContent = ({
 
 type Props = {
   noteId?: string;
+  setPlaces: Dispatch<SetStateAction<Place[]>>
 }
 
-export function SimpleEditor({ noteId }: Props) {
+export function SimpleEditor({ noteId, setPlaces }: Props) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(

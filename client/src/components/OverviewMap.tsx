@@ -1,3 +1,4 @@
+import type { Place } from '@/types/places';
 import { useQuery } from '@tanstack/react-query';
 import { AdvancedMarker, Map, Pin, useMap } from '@vis.gl/react-google-maps';
 import { useEffect } from 'react';
@@ -29,16 +30,16 @@ const PoiMarkers = ({ pois }: { pois: Poi[] }) => {
 };
 
 type Props = {
-  placeIds: { id: string; label: string }[]
+  places: Place[]
 }
-export function OverviewMap({ placeIds }: Props) {
-  const queryKey = placeIds.map(p => p.id).join(',')
+export function OverviewMap({ places }: Props) {
+  const queryKey = places.map(p => p.id).join(',')
 
   const { data: pois = [] } = useQuery({
     queryKey: ['places', queryKey],
     queryFn: async () => {
       const results = await Promise.allSettled(
-        placeIds.map(async ({ id }) => {
+        places.map(async ({ id }) => {
           // https://developers.google.com/maps/documentation/javascript/place-details
           console.log('Searching place details')
           const place = new google.maps.places.Place({ id });
@@ -56,7 +57,7 @@ export function OverviewMap({ placeIds }: Props) {
         .filter(r => r.status === 'fulfilled')
         .map(r => (r as PromiseFulfilledResult<Poi>).value);
     },
-    enabled: placeIds.length > 0,
+    enabled: places.length > 0,
   })
 
 

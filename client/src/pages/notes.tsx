@@ -21,6 +21,7 @@ import {
 } from '@tanstack/react-query';
 import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
+import type { Place } from '@/types/places';
 
 
 
@@ -31,6 +32,7 @@ const Main = styled('main', {
   openRight?: boolean;
 }>(({ theme }) => ({
   flexGrow: 1,
+  overflow: 'hidden',
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -62,11 +64,12 @@ const Main = styled('main', {
 }));
 
 export default function Notes() {
-  const [selectedNoteId, setSelectedNoteId] = useState<string>();
-  const isCreating = useRef(false);
-
   const queryClient = useQueryClient();
   const { data: user } = useUser();
+
+  const isCreating = useRef(false);
+  const [selectedNoteId, setSelectedNoteId] = useState<string>();
+  const [places, setPlaces] = useState<Place[]>([]);
 
   const handleSelectCurrentNoteId = useCallback((noteId: string) => {
     setSelectedNoteId(noteId);
@@ -169,7 +172,9 @@ export default function Notes() {
             </IconButton>
           </Box>
 
-          <SimpleEditor key={currentNoteId} noteId={currentNoteId} />
+          <Box sx={{ flexGrow: 1, minWidth: 0, overflow: 'auto' }}>
+            <SimpleEditor key={currentNoteId} noteId={currentNoteId} setPlaces={setPlaces} />
+          </Box>
 
           {/* Right toggle */}
           <Box sx={{ p: 2, flexShrink: 0, height: 1, display: 'flex', alignItems: 'start' }}>
@@ -184,6 +189,7 @@ export default function Notes() {
       </Main>
 
       <OverviewMapDrawer
+        places={places}
         open={openRightDrawer}
         handleDrawerClose={handleRightDrawerClose}
       />
