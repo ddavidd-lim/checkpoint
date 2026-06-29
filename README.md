@@ -8,7 +8,7 @@ A rich text note-taking app that lets you tag locations inline and visualize the
 
 - 📝 **Rich text editing** via TipTap — headings, tasks, code blocks, and more
 - 📍 **Location tagging** — attach a place to any note and view a map of the location
--  🗺️**Live overview map** — all places in a note appear as pins on a live side panel map
+- 🗺️ **Live overview map** — all places in a note appear as pins on a live side panel map
 - ⚡ **Optimistic updates** — instant UI feedback with TanStack Query mutation caching
 - 💾 **Auto-save** — debounced saves
 - 🔐 **Auth & row-level security** — per-user data isolation enforced at the database layer via Supabase RLS
