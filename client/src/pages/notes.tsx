@@ -1,29 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
-import Box from '@mui/material/Box';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Drawer from '@/components/drawer';
+import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
+import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useUser } from '@/hooks/useUser';
 import { createNote } from '@/repositories/notes';
 import { initAuth } from '@/repositories/users';
 import { supabase } from '@/services/supabase';
 import type { Note } from '@/types/db';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import type { Place } from '@/types/places';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
-import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
-import type { Place } from '@/types/places';
 
 import welcomeContent from '../components/tiptap-templates/simple/data/welcome-content.json';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 
@@ -41,6 +41,10 @@ const Main = styled('main', {
   }),
   marginLeft: `-${LEFT_DRAWER_WIDTH}px`,
   marginRight: `-${RIGHT_DRAWER_WIDTH}px`,
+  [theme.breakpoints.down('sm')]: {
+    marginLeft: 0,
+    marginRight: 0,
+  },
   variants: [
     {
       props: ({ openLeft }) => openLeft,
@@ -72,6 +76,9 @@ export default function Notes() {
   const isCreating = useRef(false);
   const [selectedNoteId, setSelectedNoteId] = useState<string>();
   const [places, setPlaces] = useState<Place[]>([]);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSelectCurrentNoteId = useCallback((noteId: string) => {
     setSelectedNoteId(noteId);
@@ -124,7 +131,7 @@ export default function Notes() {
   }, [user?.id, isSuccess, notes?.length]);
 
   // Left Drawer state
-  const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
+  const [openLeftDrawer, setOpenLeftDrawer] = useState(isMobile ? false : true);
 
   const handleLeftDrawerOpen = () => {
     setOpenLeftDrawer(true);
@@ -162,8 +169,8 @@ export default function Notes() {
             onClick={handleLeftDrawerOpen}
             sx={{
               position: 'absolute',
-              left: 8,
-              top: 64,
+              left: { xs: 0, sm: 8 },
+              top: { xs: '50%', sm: 50 },
               zIndex: 1300,
               opacity: openLeftDrawer ? 0 : 1,
               pointerEvents: openLeftDrawer ? 'none' : 'auto',
@@ -180,8 +187,8 @@ export default function Notes() {
             onClick={handleRightDrawerOpen}
             sx={{
               position: 'absolute',
-              right: 8,
-              top: 50,
+              right: { xs: 0, sm: 8 },
+              top: { xs: '50%', sm: 50 },
               zIndex: 1300,
               opacity: openRightDrawer ? 0 : 1,
               pointerEvents: openRightDrawer ? 'none' : 'auto',

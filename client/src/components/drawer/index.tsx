@@ -19,6 +19,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import MenuContent from "./MenuContent";
 import { LEFT_DRAWER_WIDTH } from "@/constants.ts/drawerWidth";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Drawer = styled(MuiDrawer)({
   width: LEFT_DRAWER_WIDTH,
@@ -45,6 +46,8 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
   const [menuNoteId, setMenuNoteId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const { data: notes = [] } = useQuery<Note[]>({
     queryKey: ['notes'],
@@ -112,7 +115,7 @@ export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, hand
 
   return (
     <Drawer
-      variant="persistent"
+      variant={isMobile ? 'temporary' : 'persistent'}
       open={open}
       sx={{
         width: LEFT_DRAWER_WIDTH,

@@ -473,7 +473,7 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
             }}
             sx={{
               p: 2,
-              pl: 5,
+              pl: { xs: 2, sm: 5 },
               width: 1,
               maxWidth: 750,
 
@@ -484,14 +484,18 @@ export function SimpleEditor({ noteId, setPlaces }: Props) {
             }}
           />
 
-          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, pl: 7, justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', width: 1, maxWidth: 750, px: { xs: 2, sm: 7 }, justifyContent: 'space-between' }}>
             <MuiTypography variant={'subtitle2'}>
-              Created: {dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
+              Created: {isMobile
+                ? dayjs(note?.created_at).format('MM/DD/YYYY')
+                : dayjs(note?.created_at).format('MM/DD/YYYY, h:mm A')}
             </MuiTypography>
             <Stack direction={'row'} sx={{ gap: 1, alignItems: 'center' }}>
               <SaveIndicator state={saveState} updatedAt={dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')} />
               <MuiTypography variant={'subtitle2'}>
-                Updated: {dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
+                Updated: {isMobile
+                  ? dayjs(note?.updated_at).format('MM/DD/YYYY')
+                  : dayjs(note?.updated_at).format('MM/DD/YYYY, h:mm A')}
               </MuiTypography>
 
             </Stack>

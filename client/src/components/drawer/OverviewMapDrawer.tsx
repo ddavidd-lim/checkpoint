@@ -17,6 +17,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from "@mui/material/Typography";
 import { OverviewMap } from '../OverviewMap';
 import Paper from '@mui/material/Paper';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Drawer = styled(MuiDrawer)({
   width: RIGHT_DRAWER_WIDTH,
@@ -44,9 +45,11 @@ export default function OverviewMapDrawer({ handleDrawerClose, open, places }: P
 
   const { data: pois = [] } = usePlacePois(places);
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Drawer
-      variant="persistent"
+      variant={isMobile ? 'temporary' : 'persistent'}
       anchor="right"
       open={open}
       sx={{
