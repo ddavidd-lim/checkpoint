@@ -221,9 +221,9 @@ export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, 
           },
         }}
       >
-        <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
+        {/* <Typography variant="subtitle2" sx={{ fontSize: 10, color: 'lightgray', px: 2 }}>
           {menuNoteId}
-        </Typography>
+        </Typography> */}
         <MenuItem
           onClick={() => menuNoteId && deleteMutation.mutate(menuNoteId)}
           sx={{ color: 'error.main' }}
