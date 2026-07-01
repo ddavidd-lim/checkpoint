@@ -40,7 +40,7 @@ type Props = {
 
 }
 
-export default function Sidebar({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
+export default function NotesDrawer({ handleSelectCurrentNoteId, currentNoteId, handleDrawerClose, open }: Props) {
 
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);

@@ -2,7 +2,7 @@
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import Drawer from '@/components/drawer';
+import NotesDrawer from '@/components/drawer';
 import OverviewMapDrawer from '@/components/drawer/OverviewMapDrawer';
 import { LEFT_DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from '@/constants.ts/drawerWidth';
 import { useUser } from '@/hooks/useUser';
@@ -154,7 +154,7 @@ export default function Notes() {
 
   return (
     <>
-      <Drawer
+      <NotesDrawer
         currentNoteId={currentNoteId ?? ''}
         handleSelectCurrentNoteId={handleSelectCurrentNoteId}
         open={openLeftDrawer}
